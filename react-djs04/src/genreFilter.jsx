@@ -1,6 +1,6 @@
 import { genres } from "./Data.js";
 
-export default function genreFilter({ value, onChange }) {
+export default function GenreFilter({ value, onChange }) {
     return (
         <select
             value={value}

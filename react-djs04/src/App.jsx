@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import Header from "./Header.jsx"
 import PodcastCard from "./PodcastCards.jsx"
 import { genres } from "./Data.js"
+import SearchBar from "./searchBar.jsx";
+import GenreFilter from "./genreFilter.jsx";
+import SortDropdown from "./sorter.jsx";
 import "./index.css"
 
 
@@ -49,23 +52,23 @@ export default function App() {
     }
   
   
-  const filteredPodcasts = podcasts.filter(function (podcast) {
-    const titleMatch = podcast.title.toLowerCase().includes(search.toLowerCase());
-    const genreList = getGenresByIds(podcast.genres);
-    const genreMatch = selectedGenre === "All" || genreList.includes(selectedGenre);
+    const filteredPodcasts = podcasts.filter(function (podcast) {
+      const titleMatch = podcast.title.toLowerCase().includes(search.toLowerCase());
+      const genreList = getGenresByIds(podcast.genres);
+      const genreMatch = selectedGenre === "All" || genreList.includes(selectedGenre);
 
-    return titleMatch && genreMatch;
-  });
+      return titleMatch && genreMatch;
+    });
 
-  const sortedPodcasts = [...filteredPodcasts].sort(function (a, b) {
-    if (sortOrder === "A-Z") {
-      return a.title.localCompare(b.title);
-    } else {
-      return b.title.localCompare(a.title);
-    }
-  });
+    const sortedPodcasts = [...filteredPodcasts].sort(function (a, b) {
+      if (sortOrder === "A-Z") {
+        return a.title.localeCompare(b.title);
+      } else {
+        return b.title.localeCompare(a.title);
+      }
+    });
 
-    const podcastCards = podcasts.map(function (podcast) {
+    const podcastCards = sortedPodcasts.map(function (podcast) {
         return (
             <PodcastCard
                 key={podcast.id}
@@ -85,6 +88,11 @@ export default function App() {
                 
                 (<div>
                     <Header />
+                      <div className="controls">
+                        <SearchBar value={search} onChange={setSearch} />
+                        <GenreFilter value={selectedGenre} onChange={setSelectedGenre} />
+                        <SortDropdown value={sortOrder} onChange={setSortOrder} />
+                    </div>
                     <main id="podcast-grid" className="grid">
                         {podcastCards}
                     </main>

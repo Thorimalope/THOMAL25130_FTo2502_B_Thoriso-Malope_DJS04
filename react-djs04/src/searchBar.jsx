@@ -1,4 +1,4 @@
-export default function SeachBar({value, onChange}) {
+export default function SearchBar({value, onChange}) {
     return (
         <input
             type="text"
