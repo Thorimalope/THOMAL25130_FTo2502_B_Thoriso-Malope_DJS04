@@ -7,8 +7,12 @@ import "./index.css"
 
 export default function App() {
 
-    const [podcasts, setPodcasts] = useState([]);
-    const [errorMessage, setErrorMessage] = useState(false);
+  const [podcasts, setPodcasts] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(false);
+  const [search, setSearch] = useState("");
+  const [selectedGenre, setSelectedGenre] = useState("All");
+  const [sortOrder, setSortOrder] = useState("A-Z");
+
 
     useEffect(function () {
         fetch("https://podcast-api.netlify.app/")
@@ -43,6 +47,23 @@ export default function App() {
 
         return result;
     }
+  
+  
+  const filteredPodcasts = podcasts.filter(function (podcast) {
+    const titleMatch = podcast.title.toLowerCase().includes(search.toLowerCase());
+    const genreList = getGenresByIds(podcast.genres);
+    const genreMatch = selectedGenre === "All" || genreList.includes(selectedGenre);
+
+    return titleMatch && genreMatch;
+  });
+
+  const sortedPodcasts = [...filteredPodcasts].sort(function (a, b) {
+    if (sortOrder === "A-Z") {
+      return a.title.localCompare(b.title);
+    } else {
+      return b.title.localCompare(a.title);
+    }
+  });
 
     const podcastCards = podcasts.map(function (podcast) {
         return (
@@ -62,10 +83,12 @@ export default function App() {
         <>
             {errorMessage ? <p>Error could not fetch data</p> :
                 
-                (<div><Header />
+                (<div>
+                    <Header />
                     <main id="podcast-grid" className="grid">
                         {podcastCards}
-                    </main></div>)}
+                    </main>
+                </div>)}
         </>    
     )
 }
